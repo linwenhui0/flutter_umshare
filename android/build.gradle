@@ -1,4 +1,4 @@
-group 'cn.ugle.flutter.umengshare'
+group 'com.yf.umeng.umengshare_flutter'
 version '1.0-SNAPSHOT'
 
 buildscript {
@@ -20,9 +20,11 @@ rootProject.allprojects {
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
 
     defaultConfig {
         minSdkVersion 16
@@ -31,13 +33,20 @@ android {
     lintOptions {
         disable 'InvalidPackage'
     }
+
+    dependencies{
+        implementation fileTree(include: ['*.jar'], dir: 'libs')
+        implementation 'com.umeng.umsdk:common:2.0.2'
+        implementation 'com.umeng.umsdk:utdid:1.1.5.3'
+        implementation 'com.umeng.umsdk:share-core:6.9.4'
+        implementation 'com.umeng.umsdk:share-qq:6.9.4'
+        implementation 'com.umeng.umsdk:share-wx:6.9.4'
+        implementation 'com.hlibrary.util:utillibrary:0.0.7.1-SNAPSHOT'
+    }
+}
+repositories {
+    mavenCentral()
 }
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    //implementation "com.android.support:appcompat-v7:23.4.0"
-    //implementation "com.android.support:support-annotations:27.1.1"
-    //implementation "com.android.support:support-v4:27.0.2"
-    implementation 'com.umeng.sdk:common:latest.integration'
-    implementation 'com.umeng.sdk:utdid:1.1.5.3'
-    //implementation files('libs/flutter.jar')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

@@ -1,0 +1,45 @@
+PODS:
+  - Flutter (1.0.0)
+  - UMCCommon (2.0.0)
+  - UMCSecurityPlugins (1.0.6)
+  - UMCShare/Core (6.9.5):
+    - UMCCommon
+  - UMCShare/Social/ReducedQQ (6.9.5):
+    - UMCCommon
+    - UMCShare/Core
+  - UMCShare/Social/ReducedWeChat (6.9.5):
+    - UMCCommon
+    - UMCShare/Core
+  - umengshare_flutter (0.0.1):
+    - Flutter
+    - UMCCommon
+    - UMCSecurityPlugins
+    - UMCShare/Social/ReducedQQ
+    - UMCShare/Social/ReducedWeChat
+
+DEPENDENCIES:
+  - Flutter (from `.symlinks/flutter/ios`)
+  - umengshare_flutter (from `.symlinks/plugins/umengshare_flutter/ios`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - UMCCommon
+    - UMCSecurityPlugins
+    - UMCShare
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: ".symlinks/flutter/ios"
+  umengshare_flutter:
+    :path: ".symlinks/plugins/umengshare_flutter/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
+  UMCCommon: 79b5a614c958db367113eed5740109d9a98e1223
+  UMCSecurityPlugins: 0831a08f3988f3cea9f1d3a7626cd9bee4fef150
+  UMCShare: 552b29753f1b4da87b51d96545ed19e6263df397
+  umengshare_flutter: cd65405a0764d0d548d22df8b841ad0fe1732688
+
+PODFILE CHECKSUM: aff02bfeed411c636180d6812254b2daeea14d09
+
+COCOAPODS: 1.6.0

@@ -1,150 +1,143 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-///支持分享平台
-///
-///Sina 新浪
-///
-///WechatSession 微信聊天
-///
-///WechatTimeLine 微信朋在圈
-///
-///WechatFavorite 微信收藏
-///
-///QQ
-///
-///Qzone QQ空间
-///
-///Facebook 脸书
-///
-///Twitter 推特
-enum UMSharePlatform{
-  Sina,
-  WechatSession,
-  WechatTimeLine,
-  WechatFavorite,
-  QQ,
-  Qzone,
-  Facebook,
-  Twitter
-}
-///支持登录或检察安装的平台
-///
-///QQ
-///
-///Wechat 微信
-///
-///Sina 新浪
-///
-///Facebook 脸书
-///
-///Twitter 推特
-enum UMPlatform{
-  Sina,
-  Wechat,
-  QQ,
-  Facebook,
-  Twitter
-}
-///分享类型
-///
-///Misuc 音乐
-///
-///Video 视频
-///
-///WebUrl 网页
-enum UMShareMediaType{
-  Misuc,
-  Video,
-  WebUrl
-}
-///集成U盟分享SDK
-class UMengShare {
-  UMengShare._();
-  static const MethodChannel _channel = const MethodChannel('ugle.cn/UMengShare');
-  /// 分享文本
-  /// 
-  /// @platform 分享平台
-  /// 
-  /// @text 文本
-  /// 
-  /// 返回参数说明 um_status : SUCCESS 成功 ERROR 失败 CANCEL 用户取消
-  static Future<dynamic> shareText(UMSharePlatform platform,String text) async {
-    Map<dynamic,dynamic> result= await _channel.invokeMethod('shareText',{"platform":platform.index,"text":text});
-    return result;
+import 'package:umengshare_flutter/model/result.dart';
+import 'package:umengshare_flutter/utils/constants.dart';
+import 'package:umengshare_flutter/utils/utils.dart' show Print;
+
+class UmengShare {
+  static const MethodChannel _channel =
+      const MethodChannel('umengshare_flutter');
+
+  UmengShare._();
+
+  /// 初始化
+  static Future<Result> init(String appKey,
+      {String weiChatAppKey,
+      String weiChatAppSecret,
+      String qqAppKey,
+      String qqAppSecret}) async {
+    Map result = await _channel.invokeMethod(Constants.INIT, {
+      Key.APP_KEY: appKey,
+      Key.WEI_XIN_APP_KEY: weiChatAppKey,
+      Key.WEI_XIN_APP_SECRET: weiChatAppSecret,
+      Key.QQ_APP_KEY: qqAppKey,
+      Key.QQ_APP_SECRET: qqAppSecret
+    });
+    Print().printNative("init result($result)");
+    int code = result[Key.CODE];
+    String msg = "";
+    if (result.containsKey(Key.MSG)) {
+      msg = result[Key.MSG];
+    }
+    return Result(code: code, message: msg);
   }
-  /// 分享图片
-  /// 
-  /// @platform 分享平台
-  /// 
-  /// @thumb 缩略图或图标 注：图片链接或本地图片路径
-  /// 
-  /// @desc 分享的图片 注：图片链接或本地图片路径
-  /// 
-  /// 返回参数说明 um_status : SUCCESS 成功 ERROR 失败 CANCEL 用户取消
-  static Future<dynamic> shareImage(UMSharePlatform platform,String thumb,String image) async{
-    Map<dynamic,dynamic> result = await _channel.invokeMethod('shareImage',{'platform':platform.index,"thumb":thumb,"image":image});
-    return result;
+
+  /// 文本分享
+  static Future<Result> shareText({PlatFormType platform, String text}) async {
+    Map result = await _channel.invokeMethod(Constants.SHARE_TEXT, {
+      Key.PLATFORM: platform.index,
+      Key.TEXT: text,
+    });
+    Print().printNative("shareText result($result)");
+    int code = result[Key.CODE];
+    String msg = "";
+    if (result.containsKey(Key.MSG)) {
+      msg = result[Key.MSG];
+    }
+    return Result(code: code, message: msg);
   }
-  /// 分享媒体
-  /// 
-  /// @platform 分享平台
-  /// 
-  /// @type 分享类型
-  /// 
-  /// @title 标题
-  /// 
-  /// @desc 分享描述文本
-  /// 
-  /// @thumb 缩略图或图标 注：图片链接或本地图片路径
-  /// 
-  /// @link 分享的音乐、视频、网页的url链接 
-  /// 
-  /// 注：当分享为图片类型的时候可以是图片链接或本地图片路径
-  /// 
-  /// 返回参数说明 um_status : SUCCESS 成功 ERROR 失败 CANCEL 用户取消
-  static Future<dynamic> shareMedia(UMSharePlatform platform,UMShareMediaType type,String title,String desc,String thumb,String link) async{
-    Map<dynamic,dynamic> result = await _channel.invokeMethod('shareMedia',{"platform":platform.index,"type":type.index,"title":title,"desc":desc,"thumb":thumb,"link":link});
-    return result;
+
+  /// 图片分享
+  static Future<Result> shareImage(
+      {PlatFormType platform, String image, String thumb}) async {
+    Map result = await _channel.invokeMethod(Constants.SHARE_IMAGE,
+        {Key.PLATFORM: platform.index, Key.IMAGE: image, Key.THUMB: thumb});
+    Print().printNative("shareImage result($result)");
+    int code = result[Key.CODE];
+    String msg = "";
+    if (result.containsKey(Key.MSG)) {
+      msg = result[Key.MSG];
+    }
+    return Result(code: code, message: msg);
   }
-  /// 分享小程序（只能分享给微信好友）
-  /// 
-  /// @username 小程序id 如：gh_d43f693ca31f
-  /// 
-  /// @title 标题
-  /// 
-  /// @desc 分享描述文本
-  /// 
-  /// @thumb 小程序消息封面图片，小于128k 注：图片链接或本地图片路径
-  /// 
-  /// @url 兼容低版本的网页链接
-  /// 
-  /// @path 小程序页面路径 如：/pages/media
-  /// 
-  /// 注：当分享为图片类型的时候可以是图片链接或本地图片路径
-  /// 
-  /// 返回参数说明 um_status : SUCCESS 成功 ERROR 失败 CANCEL 用户取消
-  static Future<dynamic> shareMiniApp(String username,String title,String desc,String thumb,String url,String path) async{
-    Map<dynamic,dynamic> result = await _channel.invokeMethod('shareMiniApp',{"username":username,"title":title,"desc":desc,"thumb":thumb,"url":url,"path":path});
-    return result;
+
+  /// 多媒体分享
+  static Future<Result> shareMedia(
+      {MediaType type,
+      String thumb,
+      String image,
+      String link,
+      String title,
+      String desc,
+      PlatFormType platform}) async {
+    Map result = await _channel.invokeMethod(Constants.SHARE_MEDIA, {
+      Key.TYPE: type.index,
+      Key.IMAGE: image,
+      Key.THUMB: thumb,
+      Key.LINK: link,
+      Key.TITLE: title,
+      Key.DESC: desc,
+      Key.PLATFORM: platform.index
+    });
+    Print().printNative("shareMedia result($result)");
+    int code = result[Key.CODE];
+    String msg = "";
+    if (result.containsKey(Key.MSG)) {
+      msg = result[Key.MSG];
+    }
+    return Result(code: code, message: msg);
   }
+
   /// 登录
-  /// 
-  /// @platform 需要登录的平台
-  /// 
-  /// 返回参数说明 um_status : SUCCESS 成功 ERROR 失败 CANCEL 用户取消
-  /// 如果成功 用户信息会包含在该返回对象中
-  static Future<dynamic> login(UMPlatform platform) async{
-    Map<dynamic,dynamic> result = await _channel.invokeMethod('login',{"platform":platform.index});
-    return result;
+  static Future<Result> login(PlatFormType platform, String text) async {
+    Map result = await _channel.invokeMethod(Constants.LOGIN, {
+      Key.PLATFORM: platform.index,
+    });
+    Print().printNative("login result($result)");
+    int code = result[Key.CODE];
+    String msg = "";
+    if (result.containsKey(Key.MSG)) {
+      msg = result[Key.MSG];
+    }
+    return Result(code: code, message: msg);
   }
-  /// 检测是否安装应用
-  /// 
-  /// @platform 需要检测的平台
-  /// 
-  /// 返回参数说明 bool
-  static Future<dynamic> checkInstall(UMPlatform platform) async{
-    bool result = await _channel.invokeMethod('checkInstall',{"platform":platform.index});
-    return result;
+
+  /// 小程序分享
+  static Future<Result> shareMiniApp(
+      {String url,
+      String thumb,
+      String title,
+      String desc,
+      String path,
+      String username}) async {
+    Map result = await _channel.invokeMethod(Constants.SHARE_MINI_APP, {
+      Key.URL: url,
+      Key.THUMB: thumb,
+      Key.TITLE: title,
+      Key.DESC: desc,
+      Key.PATH: path,
+      Key.USER_NAME: username
+    });
+    Print().printNative("shareMiniApp result($result)");
+    int code = result[Key.CODE];
+    String msg = "";
+    if (result.containsKey(Key.MSG)) {
+      msg = result[Key.MSG];
+    }
+    return Result(code: code, message: msg);
+  }
+
+  /// 判断是否安装
+  static Future<Result> checkInstall({PlatFormType platform}) async {
+    Map result = await _channel
+        .invokeMethod(Constants.CHECK_INSTALL, {Key.PLATFORM: platform.index});
+    Print().printNative("checkInstall result($result)");
+    int code = result[Key.CODE];
+    String msg = "";
+    if (result.containsKey(Key.MSG)) {
+      msg = result[Key.MSG];
+    }
+    return Result(code: code, message: msg);
   }
 }
